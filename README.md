@@ -15,6 +15,12 @@ colcon build --packages-select bno055_driver
 source install/setup.bash
 ros2 run bno055_driver bno055_node
 ```
+you will need to run the below to make rviz2 work
+
+'''bash
+ros2 run tf2_ros static_transform_publisher  args='0 0 0 0 0 0 1 base_link imu_link'
+'''
+
 
 ## how to run
 

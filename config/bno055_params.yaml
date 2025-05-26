@@ -1,0 +1,19 @@
+# BNO055 ROS2 Node Configuration
+# This file contains parameters for the BNO055 IMU node in ROS2.
+# Adjust the parameters as needed for your setup.
+# The i2c_address is set to 41, which corresponds to the hexadecimal address 0x29.
+# The frame_id is set to "imu_link" for the IMU data frame.
+# The publish_rate is set to 10.0 Hz for publishing IMU data.
+# Ensure that the BNO055 sensor is connected correctly to the I2C bus.
+# The node will publish IMU data at the specified rate.
+# BNO055 ROS2 Node Configuration
+# TODO: This configuration file is used to set parameters for the BNO055 ROS2 node.
+# TODO:The parameters include the I2C address, frame ID, and publish rate.
+# Make sure to adjust the parameters according to your hardware setup.
+# BNO055 ROS2 Node Configuration
+
+bno055_node:
+  ros__parameters:
+    i2c_address: 41  # Decimal for 0x29
+    frame_id: "imu_link"
+    publish_rate: 10.0

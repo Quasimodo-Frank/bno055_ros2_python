@@ -13,6 +13,11 @@ from sensor_msgs.msg import MagneticField
 from geometry_msgs.msg import Quaternion
 import math
 
+from geometry_msgs.msg import PoseStamped
+from nav_msgs.msg import Path
+
+
+# Function to convert Euler angles (roll, pitch, yaw) to quaternion
 
 def euler_to_quaternion(roll, pitch, yaw):
     """Convert Euler angles to quaternion."""
@@ -35,8 +40,14 @@ class BNO055Node(Node):
         super().__init__('bno055_node')
         self.publisher_ = self.create_publisher(Imu, 'imu/data_raw', 10)
         self.mag_publisher_ = self.create_publisher(MagneticField, 'imu/mag', 10)
+        self.path_pub = self.create_publisher(Path, 'imu/path', 10)
+
         timer_period = 0.1  # seconds
         self.timer = self.create_timer(timer_period, self.timer_callback)
+
+        self.path_msg = Path()
+        self.path_msg.header.frame_id = 'imu_link'
+
 
         #i2c = busio.I2C(board.SCL, board.SDA)
         #self.sensor = adafruit_bno055.BNO055_I2C(i2c)
@@ -83,6 +94,24 @@ class BNO055Node(Node):
             mag_msg.magnetic_field.z = mag[2] * 1e-6
             
             self.mag_publisher_.publish(mag_msg)
+
+        pose = PoseStamped()
+        pose.header.stamp = self.get_clock().now().to_msg()
+        pose.header.frame_id = 'imu_link'
+
+        # For now, just append static/dummy positions or update as needed
+        # Replace these with actual integration if available
+        pose.pose.position.x = len(self.path_msg.poses) * 0.05  # simulate forward movement
+        pose.pose.position.y = 0.0
+        pose.pose.position.z = 0.0
+
+        # Use IMU orientation
+        pose.pose.orientation = imu_msg.orientation
+
+        self.path_msg.poses.append(pose)
+        self.path_msg.header.stamp = pose.header.stamp
+        self.path_pub.publish(self.path_msg)
+
 
 def main(args=None):
     rclpy.init(args=args)
